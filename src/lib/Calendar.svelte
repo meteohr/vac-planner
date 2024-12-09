@@ -1,4 +1,6 @@
 <script lang="ts">
+	let { year, vacationDays } = $props();
+
 	const isLeapYear = (year: number) => {
 		if (year % 4 !== 0) return false;
 		if (year % 100 !== 0) return true;
@@ -6,7 +8,7 @@
 	};
 	const months = [
 		{ name: "January", days: 31, start: 3 },
-		{ name: "February", days: isLeapYear(2024) ? 29 : 28, start: 6 },
+		{ name: "February", days: isLeapYear(year) ? 29 : 28, start: 6 },
 		{ name: "March", days: 31, start: 6 },
 		{ name: "April", days: 30, start: 2 },
 		{ name: "May", days: 31, start: 4 },
@@ -19,7 +21,7 @@
 		{ name: "December", days: 31, start: 1 }
 	];
 	const getDay = (month: string, day: number): string | undefined => {
-		const date = new Date(`${month} ${day}, 2024 12:00:00`);
+		const date = new Date(`${month} ${day}, ${year} 12:00:00`);
 		const dayNumber = date.getDay();
 		if (isNaN(dayNumber)) return;
 		const dayMap = {
@@ -43,7 +45,7 @@
 			<div class="cal-days">
 				{#each Array.from({length: month.days}, (_, i) => i + 1) as day}
 					<div class="toggle-wrapper">
-						<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle">
+						<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle" onclick={() => vacationDays--}>
 						<label for="{month.name}-{day}-toggle" class="toggle-label">{getDay(month.name, day)}</label>
 					</div>
 				{/each}
