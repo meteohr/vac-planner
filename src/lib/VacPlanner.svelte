@@ -1,21 +1,21 @@
 <script>
-	import Calendar from "./calendar.svelte";
+	import Calendar from "./Calendar.svelte";
 </script>
 
 <style>
-	.config {
-			padding: 20px;
+	.wrapper {
+		padding: 20px;
 	}
 </style>
 
-<div class="config">
-	<h1>Urlaubs Planer</h1>
+<div class="wrapper">
+	<h1>Vac Planner - einfach Urlaub planen</h1>
 	Jahr:
 	<select name="year" id="year">
 		<option value="2024">2024</option>
 		<option value="2025">2025</option>
 	</select>
-	Urlaubstage: <input type="number" id="vacation-days" name="vacation-days" defaultValue="30" min="0" max="100" />
+	Urlaubstage: <input type="number" id="vacation-days" name="vacation-days" value="30" min="0" max="100" />
 	Schulferien:
 	<select name="state" id="state">
 		<option value="bavaria">Bayern</option>
