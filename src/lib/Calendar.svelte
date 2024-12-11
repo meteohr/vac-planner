@@ -1,5 +1,6 @@
 <script lang="ts">
-	let { year, vacationDays } = $props();
+	let { year, updateRemainingVacationDays } = $props();
+	let selectedOptions = $state([]);
 
 	const isLeapYear = (year: number) => {
 		if (year % 4 !== 0) return false;
@@ -35,6 +36,7 @@
 		};
 		return dayMap[dayNumber as keyof typeof dayMap];
 	};
+	$effect(() => updateRemainingVacationDays(selectedOptions.length));
 </script>
 
 <h1>2024</h1>
@@ -45,7 +47,7 @@
 			<div class="cal-days">
 				{#each Array.from({length: month.days}, (_, i) => i + 1) as day}
 					<div class="toggle-wrapper">
-						<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle" onclick={() => vacationDays--}>
+						<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle" bind:group={selectedOptions} value="{month.name}-{day}" >
 						<label for="{month.name}-{day}-toggle" class="toggle-label">{getDay(month.name, day)}</label>
 					</div>
 				{/each}

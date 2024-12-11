@@ -1,8 +1,14 @@
-<script>
+<script lang="ts">
 	import Calendar from "./Calendar.svelte";
+	import StatusBar from "./StatusBar.svelte";
 
 	let selectedYear = $state();
 	let vacationDays = $state(30);
+	let remainingVacationDays = $state(30);
+
+	function updateRemainingVacationDays(plannedVacationDays: number) {
+		remainingVacationDays = vacationDays - plannedVacationDays;
+	}
 </script>
 
 <style>
@@ -25,5 +31,6 @@
 		<option value="rlp">Rheinland-Pfalz</option>
 		<option value="berlin">Berlin</option>
 	</select>
-	<Calendar year={selectedYear} vacationDays={vacationDays} />
+	<Calendar year={selectedYear} updateRemainingVacationDays={updateRemainingVacationDays} />
+	<StatusBar remainingVacationDays={remainingVacationDays} />
 </div>
