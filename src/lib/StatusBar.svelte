@@ -3,7 +3,7 @@
 </script>
 
 <div>
-    Verbleibender Urlaub: 
+    Verbleibende Urlaubstage:
     {#if remainingVacationDays < 0}
         <span class="red">{remainingVacationDays}</span>
     {:else}

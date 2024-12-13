@@ -1,60 +1,39 @@
 <script lang="ts">
-	let { year, updateRemainingVacationDays } = $props();
-	let selectedOptions = $state([]);
+	import {getDay, getMonths, isHoliday, getHolidaysByStateAndYear} from "./dates.js";
 
-	const isLeapYear = (year: number) => {
-		if (year % 4 !== 0) return false;
-		if (year % 100 !== 0) return true;
-		return year % 400 === 0;
-	};
-	const months = [
-		{ name: "January", days: 31, start: 3 },
-		{ name: "February", days: isLeapYear(year) ? 29 : 28, start: 6 },
-		{ name: "March", days: 31, start: 6 },
-		{ name: "April", days: 30, start: 2 },
-		{ name: "May", days: 31, start: 4 },
-		{ name: "June", days: 30, start: 0 },
-		{ name: "July", days: 31, start: 2 },
-		{ name: "August", days: 31, start: 5 },
-		{ name: "September", days: 30, start: 1 },
-		{ name: "October", days: 31, start: 3 },
-		{ name: "November", days: 30, start: 6 },
-		{ name: "December", days: 31, start: 1 }
-	];
-	const getDay = (month: string, day: number): string | undefined => {
-		const date = new Date(`${month} ${day}, ${year} 12:00:00`);
-		const dayNumber = date.getDay();
-		if (isNaN(dayNumber)) return;
-		const dayMap = {
-			0: "So",
-			1: "Mo",
-			2: "Di",
-			3: "Mi",
-			4: "Do",
-			5: "Fr",
-			6: "Sa"
-		};
-		return dayMap[dayNumber as keyof typeof dayMap];
-	};
-	$effect(() => updateRemainingVacationDays(selectedOptions.length));
+	let { selectedYear, selectedState, updateRemainingVacationDays } = $props();
+	let selectedOptions = $state([]);
+	let holidaysPromise = $state(getHolidaysByStateAndYear(selectedState, selectedYear));
+
+	$effect(() => {
+		updateRemainingVacationDays(selectedOptions.length);
+		holidaysPromise = getHolidaysByStateAndYear(selectedState, selectedYear);
+	});
 </script>
 
-<h1>2024</h1>
-<div class="cal">
-	{#each months as month}
-		<div class="cal-month">
-			<h2>{month.name}</h2>
-			<div class="cal-days">
-				{#each Array.from({length: month.days}, (_, i) => i + 1) as day}
-					<div class="toggle-wrapper">
-						<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle" bind:group={selectedOptions} value="{month.name}-{day}" >
-						<label for="{month.name}-{day}-toggle" class="toggle-label">{getDay(month.name, day)}</label>
-					</div>
-				{/each}
+<h1>{selectedYear}</h1>
+{#await holidaysPromise}
+	<p>...waiting</p>
+{:then holidays}
+	<div class="cal">
+		{#each getMonths(selectedYear) as month, monthIndex}
+			<div class="cal-month">
+				<h2>{month.name}</h2>
+				<div class="cal-days">
+					{#each Array.from({length: month.days}, (_, i) => i + 1) as day}
+						<div class="toggle-wrapper">
+							<input class="toggle" type="checkbox" id="{month.name}-{day}-toggle" bind:group={selectedOptions} value="{month.name}-{day}" disabled={isHoliday(selectedYear, monthIndex+1, day, holidays)} >
+							<label for="{month.name}-{day}-toggle" class="toggle-label">{getDay(selectedYear, month.name, day)}</label>
+						</div>
+					{/each}
+				</div>
 			</div>
-		</div>
-	{/each}
-</div>
+		{/each}
+	</div>
+{:catch error}
+	<p style="color: red">{error.message}</p>
+{/await}
+
 
 <style>
 	.cal {
@@ -86,5 +65,8 @@
 	}
 	.toggle-wrapper {
 			position: relative;
+	}
+	.toggle:disabled {
+		background-color: red;
 	}
 </style>
