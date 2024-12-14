@@ -2,7 +2,8 @@
 	import Calendar from "./Calendar.svelte";
 	import StatusBar from "./StatusBar.svelte";
 
-	let selectedYear = $state();
+	let selectedYear = $state("2024");
+	let selectedState = $state("by");
 	let vacationDays = $state(30);
 	let remainingVacationDays = $state(30);
 
@@ -26,11 +27,11 @@
 	</select>
 	Urlaubstage: <input bind:value={vacationDays} type="number" id="vacation-days" name="vacation-days" min="0" max="100" />
 	Schulferien:
-	<select name="state" id="state">
-		<option value="bavaria">Bayern</option>
-		<option value="rlp">Rheinland-Pfalz</option>
-		<option value="berlin">Berlin</option>
+	<select bind:value={selectedState} name="state" id="state">
+		<option value="by">Bayern</option>
+		<option value="rp">Rheinland-Pfalz</option>
+		<option value="ne">Berlin</option>
 	</select>
-	<Calendar year={selectedYear} updateRemainingVacationDays={updateRemainingVacationDays} />
+	<Calendar selectedYear={selectedYear} selectedState={selectedState} updateRemainingVacationDays={updateRemainingVacationDays} />
 	<StatusBar remainingVacationDays={remainingVacationDays} />
 </div>
