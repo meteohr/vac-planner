@@ -1,8 +1,8 @@
-import { mount } from "svelte";
-import VacPlanner from "./lib/VacPlanner.svelte";
+import { mount } from 'svelte'
+import VacPlanner from './lib/VacPlanner.svelte'
 
 const app = mount(VacPlanner, {
-  target: document.getElementById("app")!,
-});
+  target: document.getElementById('app')!,
+})
 
-export default app;
+export default app
