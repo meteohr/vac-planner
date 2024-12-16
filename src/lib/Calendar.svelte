@@ -3,13 +3,14 @@ import {
   getDay,
   getMonths,
   isHoliday,
-  getHolidaysByStateAndYear,
+  isSchoolVacation,
+  getHolidaysAndSchoolVacation,
 } from './dates.js'
 
 let { selectedYear, selectedState, updateRemainingVacationDays } = $props()
 let selectedOptions = $state([])
-let holidaysPromise = $state(
-  getHolidaysByStateAndYear(selectedState, selectedYear)
+let holidaysAndSchoolVacationPromise = $state(
+  getHolidaysAndSchoolVacation(selectedState, selectedYear)
 )
 
 const weekdays = Array.from({ length: 7 }, (_, i) =>
@@ -18,14 +19,20 @@ const weekdays = Array.from({ length: 7 }, (_, i) =>
 
 $effect(() => {
   updateRemainingVacationDays(selectedOptions.length)
-  holidaysPromise = getHolidaysByStateAndYear(selectedState, selectedYear)
+})
+
+$effect(() => {
+  holidaysAndSchoolVacationPromise = getHolidaysAndSchoolVacation(
+    selectedState,
+    selectedYear
+  )
 })
 </script>
 
 <h1>{selectedYear}</h1>
-{#await holidaysPromise}
+{#await holidaysAndSchoolVacationPromise}
   <p>...waiting</p>
-{:then holidays}
+{:then holidaysAndSchoolVacation}
   <div class="cal">
     {#each getMonths(selectedYear) as month, monthIndex}
       <div class="cal-month">
@@ -42,7 +49,14 @@ $effect(() => {
           {#each Array.from({ length: month.days }, (_, i) => i + 1) as day}
             <div class="toggle-wrapper">
               <input
-                class="toggle"
+                class="toggle {isSchoolVacation(
+                  selectedYear,
+                  monthIndex + 1,
+                  day,
+                  holidaysAndSchoolVacation.schoolVacation
+                )
+                  ? 'vacation'
+                  : null}"
                 type="checkbox"
                 id="{month.name}-{day}-toggle"
                 bind:group={selectedOptions}
@@ -51,12 +65,10 @@ $effect(() => {
                   selectedYear,
                   monthIndex + 1,
                   day,
-                  holidays
-                )}
-              />
+                  holidaysAndSchoolVacation.holidays
+                )} />
               <label for="{month.name}-{day}-toggle" class="toggle-label"
-                >{day}</label
-              >
+                >{day}</label>
             </div>
           {/each}
         </div>
@@ -114,6 +126,9 @@ $effect(() => {
   height: 30px;
   background-color: darkgrey;
   cursor: pointer;
+}
+.toggle.vacation {
+  border-top: 3px solid #2ed573;
 }
 .toggle:checked {
   background-color: lightgreen;

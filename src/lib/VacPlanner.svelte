@@ -31,7 +31,7 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
   <select bind:value={selectedState} name="state" id="state">
     <option value="by">Bayern</option>
     <option value="rp">Rheinland-Pfalz</option>
-    <option value="ne">Berlin</option>
+    <option value="be">Berlin</option>
   </select>
   <Calendar
     selectedYear={selectedYear}

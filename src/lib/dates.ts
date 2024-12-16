@@ -50,21 +50,13 @@ export const getDay = (
 }
 
 // https://www.api-feiertage.de/
-export const getHolidaysByStateAndYear = async (
-  state: string,
-  year: number
-) => {
+const getHolidays = async (state: string, year: number) => {
   const responseJson = await fetch(
     `https://get.api-feiertage.de?years=${year}&states=${state}`
   )
   const response = await responseJson.json()
   if (response.state === 'error') return []
-  console.log(response)
   return response.feiertage
-}
-
-const addLeadingZero = (input: number) => {
-  return input.toString().length === 1 ? `0${input}` : input
 }
 
 export const isHoliday = (
@@ -78,4 +70,45 @@ export const isHoliday = (
       `${year}-${addLeadingZero(month)}-${addLeadingZero(day)}` === holiday.date
   )
   return !!holiday
+}
+
+// https://ferien-api.de/
+const getSchoolVacation = async (state: string, year: number) => {
+  const responseJson = await fetch(
+    `https://ferien-api.de/api/v1/holidays/${state.toUpperCase()}/${year}`
+  )
+  const response = await responseJson.json()
+  if (response.state === 'error') return []
+  console.log(response)
+  return response
+}
+
+export const isSchoolVacation = (
+  year: number,
+  month: number,
+  day: number,
+  schoolVacation: Array<{ start: string; end: string }>
+): boolean => {
+  const check = new Date(`${year}-${month}-${day}`).getTime()
+  const vacation = schoolVacation.find(
+    ({ start, end }) =>
+      check <= new Date(end).getTime() && check >= new Date(start).getTime()
+  )
+  return !!vacation
+}
+
+const addLeadingZero = (input: number) => {
+  return input.toString().length === 1 ? `0${input}` : input
+}
+
+export const getHolidaysAndSchoolVacation = async (
+  state: string,
+  year: number
+) => {
+  const holidays = await getHolidays(state, year)
+  const schoolVacation = await getSchoolVacation(state, year)
+  return {
+    holidays,
+    schoolVacation,
+  }
 }
