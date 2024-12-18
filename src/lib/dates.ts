@@ -1,4 +1,36 @@
-export const getMonths = (year: number) => {
+interface Holiday {
+  date: string
+}
+
+interface SchoolVacation {
+  start: string
+  end: string
+}
+
+interface HolidaysAndSchoolVacation {
+  holidays: Holiday[]
+  schoolVacation: SchoolVacation[]
+}
+
+interface DayInfo {
+  isHoliday: boolean
+  isSchoolVacation: boolean
+  isWeekend: boolean
+  date: Date
+  id: string
+}
+
+interface MonthInfo {
+  days: DayInfo[]
+  start: number
+  label: string
+  name: string
+}
+
+export const getYear = (
+  year: number,
+  holidaysAndVacation: HolidaysAndSchoolVacation
+): MonthInfo[] => {
   const isLeapYear = (year: number) => {
     if (year % 4 !== 0) return false
     if (year % 100 !== 0) return true
@@ -6,47 +38,52 @@ export const getMonths = (year: number) => {
   }
 
   const months = [
-    { name: 'January', days: 31 },
-    { name: 'February', days: isLeapYear(year) ? 29 : 28 },
-    { name: 'March', days: 31 },
-    { name: 'April', days: 30 },
-    { name: 'May', days: 31 },
-    { name: 'June', days: 30 },
-    { name: 'July', days: 31 },
-    { name: 'August', days: 31 },
-    { name: 'September', days: 30 },
-    { name: 'October', days: 31 },
-    { name: 'November', days: 30 },
-    { name: 'December', days: 31 },
+    { label: 'Januar', name: 'January', days: 31 },
+    { label: 'Februar', name: 'February', days: isLeapYear(year) ? 29 : 28 },
+    { label: 'März', name: 'March', days: 31 },
+    { label: 'April', name: 'April', days: 30 },
+    { label: 'Mai', name: 'May', days: 31 },
+    { label: 'Juni', name: 'June', days: 30 },
+    { label: 'Juli', name: 'July', days: 31 },
+    { label: 'August', name: 'August', days: 31 },
+    { label: 'September', name: 'September', days: 30 },
+    { label: 'Oktober', name: 'October', days: 31 },
+    { label: 'November', name: 'November', days: 30 },
+    { label: 'Dezember', name: 'December', days: 31 },
   ]
 
   return months.map((month, index) => {
     const start = new Date(year, index, 1).getDay()
     return {
-      ...month,
+      days: Array.from({ length: month.days }, (_, i) => i + 1).map((day) => {
+        return getDayInfo(
+          new Date(`${year}-${index + 1}-${day}`),
+          month.name,
+          holidaysAndVacation
+        )
+      }),
       start,
+      label: month.label,
+      name: month.name,
     }
   })
 }
 
-export const getDay = (
-  year: number,
-  month: string | number,
-  day: number
-): string | undefined => {
-  const date = new Date(`${month} ${day}, ${year} 12:00:00`)
-  const dayNumber = date.getDay()
-  if (isNaN(dayNumber)) return
-  const dayMap = {
-    0: 'So',
-    1: 'Mo',
-    2: 'Di',
-    3: 'Mi',
-    4: 'Do',
-    5: 'Fr',
-    6: 'Sa',
+const getDayInfo = (
+  date: Date,
+  monthName: string,
+  holidaysAndSchoolVacation: HolidaysAndSchoolVacation
+): DayInfo => {
+  return {
+    isHoliday: isHoliday(date, holidaysAndSchoolVacation.holidays),
+    isSchoolVacation: isSchoolVacation(
+      date,
+      holidaysAndSchoolVacation.schoolVacation
+    ),
+    isWeekend: isWeekend(date),
+    date,
+    id: `${monthName}-${date.getDay()}-toggle`,
   }
-  return dayMap[dayNumber as keyof typeof dayMap]
 }
 
 // https://www.api-feiertage.de/
@@ -59,15 +96,11 @@ const getHolidays = async (state: string, year: number) => {
   return response.feiertage
 }
 
-export const isHoliday = (
-  year: number,
-  month: number,
-  day: number,
-  holidays: Array<{ date: string }>
-): boolean => {
+export const isHoliday = (day: Date, holidays: Holiday[]): boolean => {
   const holiday = holidays.find(
     (holiday) =>
-      `${year}-${addLeadingZero(month)}-${addLeadingZero(day)}` === holiday.date
+      `${day.getFullYear()}-${addLeadingZero(day.getMonth() + 1)}-${addLeadingZero(day.getDate())}` ===
+      holiday.date
   )
   return !!holiday
 }
@@ -79,22 +112,23 @@ const getSchoolVacation = async (state: string, year: number) => {
   )
   const response = await responseJson.json()
   if (response.state === 'error') return []
-  console.log(response)
   return response
 }
 
 export const isSchoolVacation = (
-  year: number,
-  month: number,
-  day: number,
-  schoolVacation: Array<{ start: string; end: string }>
+  day: Date,
+  schoolVacation: SchoolVacation[]
 ): boolean => {
-  const check = new Date(`${year}-${month}-${day}`).getTime()
+  const check = day.getTime()
   const vacation = schoolVacation.find(
     ({ start, end }) =>
       check <= new Date(end).getTime() && check >= new Date(start).getTime()
   )
   return !!vacation
+}
+
+const isWeekend = (day: Date) => {
+  return day.getDay() === 6 || day.getDay() === 0
 }
 
 const addLeadingZero = (input: number) => {
@@ -104,7 +138,7 @@ const addLeadingZero = (input: number) => {
 export const getHolidaysAndSchoolVacation = async (
   state: string,
   year: number
-) => {
+): Promise<HolidaysAndSchoolVacation> => {
   const holidays = await getHolidays(state, year)
   const schoolVacation = await getSchoolVacation(state, year)
   return {

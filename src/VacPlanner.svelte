@@ -1,9 +1,10 @@
 <script lang="ts">
 import Calendar from './Calendar.svelte'
 import StatusBar from './StatusBar.svelte'
+import { states } from './lib/states'
 
 let selectedYear = $state('2024')
-let selectedState = $state('by')
+let selectedState = $state(states[1].id) // bavaria default ;^)
 let vacationDays = $state(30)
 let remainingVacationDays = $state(30)
 
@@ -29,9 +30,9 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
     max="100" />
   Schulferien:
   <select bind:value={selectedState} name="state" id="state">
-    <option value="by">Bayern</option>
-    <option value="rp">Rheinland-Pfalz</option>
-    <option value="be">Berlin</option>
+    {#each states as state}
+      <option value={state.id}>{state.name}</option>
+    {/each}
   </select>
   <Calendar
     selectedYear={selectedYear}
