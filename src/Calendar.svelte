@@ -16,7 +16,6 @@ $effect(() => {
 })
 </script>
 
-<h1>{selectedYear}</h1>
 {#await holidaysAndSchoolVacationPromise}
   <p>...waiting</p>
 {:then holidaysAndSchoolVacation}

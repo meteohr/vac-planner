@@ -7,12 +7,12 @@ interface SchoolVacation {
   end: string
 }
 
-interface HolidaysAndSchoolVacation {
+export interface HolidaysAndSchoolVacation {
   holidays: Holiday[]
   schoolVacation: SchoolVacation[]
 }
 
-interface DayInfo {
+export interface DayInfo {
   isHoliday: boolean
   isSchoolVacation: boolean
   isWeekend: boolean
@@ -20,9 +20,8 @@ interface DayInfo {
   id: string
 }
 
-interface MonthInfo {
+export interface MonthInfo {
   days: DayInfo[]
-  start: number
   label: string
   name: string
 }
@@ -31,12 +30,6 @@ export const getYear = (
   year: number,
   holidaysAndVacation: HolidaysAndSchoolVacation
 ): MonthInfo[] => {
-  const isLeapYear = (year: number) => {
-    if (year % 4 !== 0) return false
-    if (year % 100 !== 0) return true
-    return year % 400 === 0
-  }
-
   const months = [
     { label: 'Januar', name: 'January', days: 31 },
     { label: 'Februar', name: 'February', days: isLeapYear(year) ? 29 : 28 },
@@ -53,7 +46,6 @@ export const getYear = (
   ]
 
   return months.map((month, index) => {
-    const start = new Date(year, index, 1).getDay()
     return {
       days: Array.from({ length: month.days }, (_, i) => i + 1).map((day) => {
         return getDayInfo(
@@ -62,7 +54,6 @@ export const getYear = (
           holidaysAndVacation
         )
       }),
-      start,
       label: month.label,
       name: month.name,
     }
@@ -131,6 +122,12 @@ const isWeekend = (day: Date) => {
   return day.getDay() === 6 || day.getDay() === 0
 }
 
+const isLeapYear = (year: number) => {
+  if (year % 4 !== 0) return false
+  if (year % 100 !== 0) return true
+  return year % 400 === 0
+}
+
 const addLeadingZero = (input: number) => {
   return input.toString().length === 1 ? `0${input}` : input
 }
@@ -139,6 +136,7 @@ export const getHolidaysAndSchoolVacation = async (
   state: string,
   year: number
 ): Promise<HolidaysAndSchoolVacation> => {
+  // TODO. Promise.all...
   const holidays = await getHolidays(state, year)
   const schoolVacation = await getSchoolVacation(state, year)
   return {

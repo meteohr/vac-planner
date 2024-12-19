@@ -1,13 +1,23 @@
 <script lang="ts">
-let { month, updateRemainingVacationDays } = $props()
+import type { MonthInfo } from './lib/dates'
+
+let {
+  month,
+  updateRemainingVacationDays,
+}: {
+  month: MonthInfo
+  updateRemainingVacationDays: (selectedOptionsLength: number) => void
+} = $props()
 
 let selectedOptions = $state([])
+
+const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
+const firstDay = month.days[0].date.getDay()
+const positionOfFirstDay = firstDay === 0 ? 6 : firstDay - 1
 
 $effect(() => {
   updateRemainingVacationDays(selectedOptions.length)
 })
-
-const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 </script>
 
 <div class="cal-month">
@@ -18,7 +28,7 @@ const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
     {/each}
   </div>
   <div class="cal-days">
-    {#each Array.from({ length: month.start - 1 }) as _}
+    {#each Array.from({ length: positionOfFirstDay }) as _}
       <div class="empty-day"></div>
     {/each}
     {#each month.days as day, dayIndex}
@@ -33,7 +43,7 @@ const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
           value="{month.name}-{dayIndex + 1}"
           disabled={day.isHoliday || day.isWeekend} />
         <label
-          for="{month.name}-{day}-toggle"
+          for={day.id}
           class="toggle-label{day.isWeekend ? ' weekend' : null}"
           >{dayIndex + 1}</label>
       </div>
@@ -44,8 +54,10 @@ const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 <style>
 .cal-month {
   border: 1px solid black;
-  margin: 10px;
+  border-radius: 10px;
   padding: 10px;
+  width: 98%;
+  height: 98%;
 }
 .cal-days {
   display: grid;
