@@ -103,9 +103,11 @@ h2 {
 }
 .toggle.holiday {
   background-color: rgb(255, 131, 131);
+  cursor: default;
 }
 .toggle.weekend {
   background-color: #f0f0f0;
+  cursor: default;
 }
 .toggle:checked {
   background-color: rgb(140, 205, 234);
