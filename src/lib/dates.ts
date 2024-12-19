@@ -136,9 +136,10 @@ export const getHolidaysAndSchoolVacation = async (
   state: string,
   year: number
 ): Promise<HolidaysAndSchoolVacation> => {
-  // TODO. Promise.all...
-  const holidays = await getHolidays(state, year)
-  const schoolVacation = await getSchoolVacation(state, year)
+  const [holidays, schoolVacation] = await Promise.all([
+    getHolidays(state, year),
+    getSchoolVacation(state, year),
+  ])
   return {
     holidays,
     schoolVacation,

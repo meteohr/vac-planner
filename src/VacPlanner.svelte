@@ -3,7 +3,7 @@ import Calendar from './Calendar.svelte'
 import StatusBar from './StatusBar.svelte'
 import { states } from './lib/states'
 
-let selectedYear = $state('2024')
+let selectedYear = $state('2025')
 let selectedState = $state(states[1].id) // bavaria default ;^)
 let vacationDays = $state(30)
 let remainingVacationDays = $state(30)
@@ -21,7 +21,7 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
       <option value="2024">2024</option>
       <option value="2025">2025</option>
     </select>
-    hab ich noch
+    habe ich noch
     <input
       bind:value={vacationDays}
       type="number"
@@ -46,7 +46,11 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
 
 <style>
 h1 {
-  font-size: 3rem;
+  font-family: 'Chewy', serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+  color: hsl(234, 35%, 38%);
 }
 
 .select-sentence {

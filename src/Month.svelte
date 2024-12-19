@@ -53,11 +53,12 @@ $effect(() => {
 
 <style>
 .cal-month {
-  border: 1px solid black;
+  background-color: hsl(234, 35%, 85%);
   border-radius: 10px;
   padding: 10px;
-  width: 98%;
-  height: 98%;
+}
+h2 {
+  color: hsl(234, 35%, 38%);
 }
 .cal-days {
   display: grid;
@@ -93,7 +94,8 @@ $effect(() => {
   appearance: none;
   width: 35px;
   height: 30px;
-  background-color: rgb(245, 240, 205);
+  /*background-color: hsl(234, 35%, 43%);*/
+  border: 1px solid hsl(234, 35%, 38%);
   cursor: pointer;
 }
 .toggle.vacation {
@@ -113,6 +115,7 @@ $effect(() => {
   cursor: pointer;
   pointer-events: none;
   user-select: none;
+  color: hsl(234, 35%, 38%);
 }
 .toggle-label.weekend {
   color: grey;
