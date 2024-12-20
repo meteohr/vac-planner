@@ -7,13 +7,18 @@ let selectedYear = $state('2025')
 let selectedState = $state(states[1].id) // bavaria default ;^) <- ofc
 let vacationDays = $state(30)
 let remainingVacationDays = $state(30)
+let darkMode = $state(false)
 
 function updateRemainingVacationDays(plannedVacationDays: number) {
   remainingVacationDays = vacationDays - plannedVacationDays
 }
+
+function toggleDarkMode() {
+  darkMode = !darkMode
+}
 </script>
 
-<div class="wrapper">
+<div class="wrapper{darkMode ? ' dark' : ''}">
   <h1 class="heading">
     <span class="full-title">Vac Planner - einfach Urlaub planen</span>
     <span class="short-title">Vac Planner</span>
@@ -39,6 +44,9 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
       {/each}
     </select>
   </div>
+  <button on:click={toggleDarkMode}>
+    {darkMode ? 'Light' : 'Dark'}
+  </button>
 
   <Calendar
     selectedYear={selectedYear}
@@ -48,12 +56,52 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
 </div>
 
 <style>
-h1 {
+:root {
+  --bg-color: #fff;
+  --text-color: #333;
+  --accent-color: hsl(234, 35%, 38%);
+  --error-color: red;
+}
+
+/* Dark mode overrides */
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: sans-serif;
+}
+
+.heading {
   font-family: 'Chewy', serif;
   font-weight: 400;
+  font-style: normal;
   font-size: clamp(2rem, 5vw, 4rem);
-  color: hsl(234, 35%, 38%);
+  color: var(--accent-color);
+  margin: 1rem;
 }
+
+button {
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent-color);
+  border: none;
+  color: var(--bg-color);
+  cursor: pointer;
+}
+
+input[type='number'],
+select {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--accent-color);
+}
+
+/*h1 {*/
+/*  font-family: 'Chewy', serif;*/
+/*  font-weight: 400;*/
+/*  font-size: clamp(2rem, 5vw, 4rem);*/
+/*  color: hsl(234, 35%, 38%);*/
+/*}*/
 
 .select-sentence {
   font-size: clamp(1rem, 2vw, 1.4rem);
@@ -61,10 +109,16 @@ h1 {
 }
 
 .wrapper {
+  background-color: var(--bg-color);
   margin: 0 auto;
   padding: 1rem;
-  max-width: 1200px;
+  max-width: 1440px;
   box-sizing: border-box;
+}
+
+.wrapper.dark {
+  --bg-color: #333131;
+  --text-color: #f0f0f0;
 }
 
 .full-title {

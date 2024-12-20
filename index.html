@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vac Planner - einfach Urlaub planen</title>
+    <title>Vac Planner</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Roboto&display=swap" rel="stylesheet">
@@ -20,8 +20,14 @@
         margin: 0;
       }
 
+      :global(body.dark) {
+          --bg-color: #1e1e1e;
+          --text-color: #f0f0f0;
+      }
+
       body {
         /* 3. Add accessible line-height */
+        /*  background-color: #1e1e1e;*/
         line-height: 1.5;
         /* 4. Improve text rendering */
         -webkit-font-smoothing: antialiased;
