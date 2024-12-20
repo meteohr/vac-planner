@@ -4,7 +4,7 @@ import StatusBar from './StatusBar.svelte'
 import { states } from './lib/states'
 
 let selectedYear = $state('2025')
-let selectedState = $state(states[1].id) // bavaria default ;^)
+let selectedState = $state(states[1].id) // bavaria default ;^) <- ofc
 let vacationDays = $state(30)
 let remainingVacationDays = $state(30)
 
@@ -14,7 +14,10 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
 </script>
 
 <div class="wrapper">
-  <h1>Vac Planner - einfach Urlaub planen</h1>
+  <h1 class="heading">
+    <span class="full-title">Vac Planner - einfach Urlaub planen</span>
+    <span class="short-title">Vac Planner</span>
+  </h1>
   <div class="select-sentence">
     Im Jahr
     <select bind:value={selectedYear} name="year" id="year">
@@ -48,18 +51,35 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
 h1 {
   font-family: 'Chewy', serif;
   font-weight: 400;
-  font-style: normal;
-  font-size: 4rem;
+  font-size: clamp(2rem, 5vw, 4rem);
   color: hsl(234, 35%, 38%);
 }
 
 .select-sentence {
-  font-size: 1.4rem;
+  font-size: clamp(1rem, 2vw, 1.4rem);
   padding: 1.5rem 0;
 }
 
 .wrapper {
-  margin: auto;
-  width: 1600px;
+  margin: 0 auto;
+  padding: 1rem;
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+
+.full-title {
+  display: inline;
+}
+.short-title {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .full-title {
+    display: none;
+  }
+  .short-title {
+    display: inline;
+  }
 }
 </style>

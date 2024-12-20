@@ -22,7 +22,7 @@ $effect(() => {
 
 <div class="cal-month">
   <h2>{month.label}</h2>
-  <div class="cal-weekdays">
+  <div class="cal-weekdays-header">
     {#each weekdays as weekday}
       <div class="weekday">{weekday}</div>
     {/each}
@@ -66,7 +66,7 @@ h2 {
   text-align: center;
   gap: 5px;
 }
-.cal-weekdays {
+.cal-weekdays-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
@@ -94,7 +94,6 @@ h2 {
   appearance: none;
   width: 35px;
   height: 30px;
-  /*background-color: hsl(234, 35%, 43%);*/
   border: 1px solid hsl(234, 35%, 38%);
   cursor: pointer;
 }
