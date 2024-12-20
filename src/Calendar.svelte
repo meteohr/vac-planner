@@ -2,18 +2,16 @@
 import { getYear, getHolidaysAndSchoolVacation } from './lib/dates.js'
 import Month from './Month.svelte'
 
-let { selectedYear, selectedState, updateRemainingVacationDays } = $props()
+// Define props as exported variables
+export let selectedYear: number
+export let selectedState: string
+export let updateRemainingVacationDays: (selectedOptionsLength: number) => void
 
-let holidaysAndSchoolVacationPromise = $state(
-  getHolidaysAndSchoolVacation(selectedState, selectedYear)
+// Initialize the data-fetching promise
+let holidaysAndSchoolVacationPromise = getHolidaysAndSchoolVacation(
+  selectedState,
+  selectedYear
 )
-
-$effect(() => {
-  holidaysAndSchoolVacationPromise = getHolidaysAndSchoolVacation(
-    selectedState,
-    selectedYear
-  )
-})
 </script>
 
 {#await holidaysAndSchoolVacationPromise}
@@ -26,9 +24,9 @@ $effect(() => {
         updateRemainingVacationDays={updateRemainingVacationDays} />
     {/each}
   </div>
-{:catch error}
-  <p style="color: red">{error.message}</p>
 {/await}
+
+<!--<p style="color: red">{message}</p>-->
 
 <style>
 .cal {

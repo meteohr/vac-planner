@@ -2,6 +2,9 @@
 import Calendar from './Calendar.svelte'
 import StatusBar from './StatusBar.svelte'
 import { states } from './lib/states'
+import { selectedDaysStore } from './stores/selectedDays'
+import { get } from 'svelte/store'
+import ExportImport from './ExportImport.svelte'
 
 let selectedYear = $state('2025')
 let selectedState = $state(states[1].id) // bavaria default ;^) <- ofc
@@ -38,6 +41,7 @@ function updateRemainingVacationDays(plannedVacationDays: number) {
         <option value={state.id}>{state.name}</option>
       {/each}
     </select>
+    <ExportImport />
   </div>
 
   <Calendar

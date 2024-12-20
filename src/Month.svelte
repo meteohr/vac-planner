@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { MonthInfo } from './lib/dates'
+import { selectedDaysStore } from './stores/selectedDays'
 
 let {
   month,
@@ -17,6 +18,12 @@ const positionOfFirstDay = firstDay === 0 ? 6 : firstDay - 1
 
 $effect(() => {
   updateRemainingVacationDays(selectedOptions.length)
+  selectedDaysStore.update((current) => {
+    return {
+      ...current,
+      [month.name]: selectedOptions,
+    }
+  })
 })
 </script>
 
