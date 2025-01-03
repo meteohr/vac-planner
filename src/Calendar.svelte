@@ -3,21 +3,10 @@ import { getYear, getHolidaysAndSchoolVacation } from './lib/dates.js'
 import Month from './Month.svelte'
 
 let { selectedYear, selectedState, updateRemainingVacationDays } = $props()
-
-let holidaysAndSchoolVacationPromise = $state(
-  getHolidaysAndSchoolVacation(selectedState, selectedYear)
-)
-
-$effect(() => {
-  holidaysAndSchoolVacationPromise = getHolidaysAndSchoolVacation(
-    selectedState,
-    selectedYear
-  )
-})
 </script>
 
-{#await holidaysAndSchoolVacationPromise}
-  <p>...waiting</p>
+{#await getHolidaysAndSchoolVacation(selectedState, selectedYear)}
+  <p>Kalender lädt...</p>
 {:then holidaysAndSchoolVacation}
   <div class="cal">
     {#each getYear(selectedYear, holidaysAndSchoolVacation) as monthInfo}
