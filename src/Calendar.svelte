@@ -14,8 +14,8 @@ let holidaysAndSchoolVacationPromise = getHolidaysAndSchoolVacation(
 )
 </script>
 
-{#await holidaysAndSchoolVacationPromise}
-  <p>...waiting</p>
+{#await getHolidaysAndSchoolVacation(selectedState, selectedYear)}
+  <p>Kalender lädt...</p>
 {:then holidaysAndSchoolVacation}
   <div class="cal">
     {#each getYear(selectedYear, holidaysAndSchoolVacation) as monthInfo}
