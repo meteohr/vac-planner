@@ -49,7 +49,7 @@ export const getYear = (
     return {
       days: Array.from({ length: month.days }, (_, i) => i + 1).map((day) => {
         return getDayInfo(
-          new Date(`${year}-${index + 1}-${day}`),
+          new Date(Date.UTC(year, index, day)),
           month.name,
           holidaysAndVacation
         )
