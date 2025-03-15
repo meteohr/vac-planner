@@ -1,16 +1,18 @@
 <script lang="ts">
 import type { MonthInfo } from './lib/dates'
 import { selectedDaysStore } from './stores/selectedDays'
-
+import { get } from 'svelte/store'
 let {
   month,
   updateRemainingVacationDays,
+  selectedDays,
+  selectedOptions,
 }: {
   month: MonthInfo
+  selectedDays: string[]
+  selectedOptions: string[]
   updateRemainingVacationDays: (selectedOptionsLength: number) => void
 } = $props()
-
-let selectedOptions = $state([])
 
 const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const firstDay = month.days[0].date.getDay()
@@ -24,6 +26,9 @@ $effect(() => {
       [month.name]: selectedOptions,
     }
   })
+  $: if (selectedDays && selectedDays !== selectedOptions) {
+    selectedOptions = [...selectedDays]
+  }
 })
 </script>
 

@@ -2,11 +2,15 @@
 import { selectedDaysStore } from './stores/selectedDays'
 import { get } from 'svelte/store'
 
-let storeValue: { [month: string]: string[] } = {}
-
+// Reactive statement to keep storeValue updated
 $: storeValue = get(selectedDaysStore)
 
 function exportToJSON() {
+  if (!storeValue || Object.keys(storeValue).length === 0) {
+    console.warn('No selected days to export.')
+    return
+  }
+
   const allSelectedDays = Object.entries(storeValue).flatMap(
     ([monthName, days]) =>
       days.map((dayStr) => {
@@ -37,15 +41,23 @@ function handleFileSelect(event: Event) {
   const reader = new FileReader()
   reader.onload = (e) => {
     try {
-      const importedData = JSON.parse(e.target?.result as string)
-      const reconstructedStore: { [monthName: string]: string[] } = {}
+      const importedData = JSON.parse(e.target?.result as string) as {
+        month: string
+        day: number
+      }[]
+      const currentStore = get(selectedDaysStore)
+
       for (const { month, day } of importedData) {
-        if (!reconstructedStore[month]) {
-          reconstructedStore[month] = []
+        if (!currentStore[month]) {
+          currentStore[month] = []
         }
-        reconstructedStore[month].push(`${month}-${day}`)
+        const dayStr = `${month}-${day}`
+        if (!currentStore[month].includes(dayStr)) {
+          currentStore[month].push(dayStr)
+        }
       }
-      selectedDaysStore.set(reconstructedStore)
+
+      selectedDaysStore.set(currentStore)
     } catch (error) {
       console.error('Error reading JSON file:', error)
     }
