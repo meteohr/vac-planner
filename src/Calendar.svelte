@@ -23,7 +23,7 @@ let { selectedYear, selectedState, updateRemainingVacationDays } = $props()
 .cal {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  grid-gap: 15px;
+  grid-gap: 25px;
 }
 
 @media (min-width: 600px) {

@@ -9,7 +9,7 @@ let vacationDays = $state(30)
 let remainingVacationDays = $state(30)
 
 function updateRemainingVacationDays(plannedVacationDays: number) {
-  remainingVacationDays = vacationDays - plannedVacationDays
+  remainingVacationDays += plannedVacationDays
 }
 </script>
 

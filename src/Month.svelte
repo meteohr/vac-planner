@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { MonthInfo } from './lib/dates'
+import type { MouseEventHandler } from 'svelte/elements'
 
 let {
   month,
@@ -9,15 +10,13 @@ let {
   updateRemainingVacationDays: (selectedOptionsLength: number) => void
 } = $props()
 
-let selectedOptions = $state([])
-
 const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const firstDay = month.days[0].date.getDay()
 const positionOfFirstDay = firstDay === 0 ? 6 : firstDay - 1
 
-$effect(() => {
-  updateRemainingVacationDays(selectedOptions.length)
-})
+const handleClick: MouseEventHandler<HTMLInputElement> = (event) => {
+  updateRemainingVacationDays(event.currentTarget.checked ? -1 : 1)
+}
 </script>
 
 <div class="cal-month">
@@ -39,7 +38,7 @@ $effect(() => {
             : null}{day.isWeekend ? ' weekend' : null}"
           type="checkbox"
           id={day.id}
-          bind:group={selectedOptions}
+          onclick={handleClick}
           value="{month.name}-{dayIndex + 1}"
           disabled={day.isHoliday || day.isWeekend} />
         <label
@@ -56,6 +55,7 @@ $effect(() => {
   background-color: hsl(234, 35%, 85%);
   border-radius: 10px;
   padding: 10px;
+  border: 1px solid hsl(234, 35%, 38%);
 }
 h2 {
   color: hsl(234, 35%, 38%);
