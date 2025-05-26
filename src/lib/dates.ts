@@ -78,7 +78,7 @@ const getDayInfo = (
 }
 
 // https://www.api-feiertage.de/
-const getHolidays = async (state: string, year: number) => {
+const getHolidays = async (state: string, year: string) => {
   const responseJson = await fetch(
     `https://get.api-feiertage.de?years=${year}&states=${state}`
   )
@@ -97,7 +97,7 @@ export const isHoliday = (day: Date, holidays: Holiday[]): boolean => {
 }
 
 // https://ferien-api.de/
-const getSchoolVacation = async (state: string, year: number) => {
+const getSchoolVacation = async (state: string, year: string) => {
   const responseJson = await fetch(
     `https://ferien-api.de/api/v1/holidays/${state.toUpperCase()}/${year}`
   )
@@ -134,7 +134,7 @@ const addLeadingZero = (input: number) => {
 
 export const getHolidaysAndSchoolVacation = async (
   state: string,
-  year: number
+  year: string
 ): Promise<HolidaysAndSchoolVacation> => {
   const [holidays, schoolVacation] = await Promise.all([
     getHolidays(state, year),

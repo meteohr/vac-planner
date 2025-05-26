@@ -12,6 +12,7 @@ let { selectedYear, selectedState, updateRemainingVacationDays } = $props()
     {#each getYear(selectedYear, holidaysAndSchoolVacation) as monthInfo}
       <Month
         month={monthInfo}
+        year={selectedYear}
         updateRemainingVacationDays={updateRemainingVacationDays} />
     {/each}
   </div>

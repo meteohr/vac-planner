@@ -2,11 +2,14 @@
 import Calendar from './Calendar.svelte'
 import StatusBar from './StatusBar.svelte'
 import { states } from './lib/states'
+import { getVacationDaysForYear } from './lib/localStorage.js'
 
 let selectedYear = $state('2025')
 let selectedState = $state(states[1].id) // bavaria default ;^) <- ofc
 let vacationDays = $state(30)
-let remainingVacationDays = $state(30)
+let remainingVacationDays = $derived(
+  vacationDays - getVacationDaysForYear(selectedYear)
+)
 
 function updateRemainingVacationDays(plannedVacationDays: number) {
   remainingVacationDays += plannedVacationDays

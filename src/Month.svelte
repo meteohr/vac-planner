@@ -1,11 +1,14 @@
 <script lang="ts">
 import type { MonthInfo } from './lib/dates'
 import type { MouseEventHandler } from 'svelte/elements'
+import { getVacationDaysForMonth, storeVacationDay } from './lib/localStorage'
 
 let {
   month,
   updateRemainingVacationDays,
+  year,
 }: {
+  year: string
   month: MonthInfo
   updateRemainingVacationDays: (selectedOptionsLength: number) => void
 } = $props()
@@ -14,8 +17,17 @@ const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 const firstDay = month.days[0].date.getDay()
 const positionOfFirstDay = firstDay === 0 ? 6 : firstDay - 1
 
+const storedVacationDaysInMonth = getVacationDaysForMonth(year, month.name)
+
 const handleClick: MouseEventHandler<HTMLInputElement> = (event) => {
+  if (event.currentTarget.checked) {
+    storeVacationDay(event.currentTarget.value, year)
+  }
   updateRemainingVacationDays(event.currentTarget.checked ? -1 : 1)
+}
+
+const isDayStored = (day: string) => {
+  return storedVacationDaysInMonth.includes(day)
 }
 </script>
 
@@ -40,7 +52,8 @@ const handleClick: MouseEventHandler<HTMLInputElement> = (event) => {
           id={day.id}
           onclick={handleClick}
           value="{month.name}-{dayIndex + 1}"
-          disabled={day.isHoliday || day.isWeekend} />
+          disabled={day.isHoliday || day.isWeekend}
+          checked={isDayStored(`${month.name}-${dayIndex + 1}`)} />
         <label
           for={day.id}
           class="toggle-label{day.isWeekend ? ' weekend' : null}"
