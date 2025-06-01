@@ -7,21 +7,28 @@ let {
   month,
   updateRemainingVacationDays,
   year,
+  state,
 }: {
   year: string
   month: MonthInfo
+  state: string
   updateRemainingVacationDays: (selectedOptionsLength: number) => void
 } = $props()
 
 const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
-const firstDay = month.days[0].date.getDay()
-const positionOfFirstDay = firstDay === 0 ? 6 : firstDay - 1
+const firstWeekDayOfMonth = month.days[0].date.getDay()
+const positionOfFirstDay =
+  firstWeekDayOfMonth === 0 ? 6 : firstWeekDayOfMonth - 1
 
-const storedVacationDaysInMonth = getVacationDaysForMonth(year, month.name)
+const storedVacationDaysInMonth = getVacationDaysForMonth(
+  year,
+  month.name,
+  state
+)
 
 const handleClick: MouseEventHandler<HTMLInputElement> = (event) => {
   if (event.currentTarget.checked) {
-    storeVacationDay(event.currentTarget.value, year)
+    storeVacationDay(event.currentTarget.value, year, state)
   }
   updateRemainingVacationDays(event.currentTarget.checked ? -1 : 1)
 }

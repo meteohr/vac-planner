@@ -8,7 +8,7 @@ let selectedYear = $state('2025')
 let selectedState = $state(states[1].id) // bavaria default ;^) <- ofc
 let vacationDays = $state(30)
 let remainingVacationDays = $derived(
-  vacationDays - getVacationDaysForYear(selectedYear)
+  vacationDays - getVacationDaysForYear(selectedYear, selectedState)
 )
 
 function updateRemainingVacationDays(plannedVacationDays: number) {
